@@ -4,7 +4,7 @@ author: Calvin Hendryx-Parker, CTO, Six Feet Up
 date: PyTennessee 2020
 ---
 
-# Who is this guy?
+# Who is this guy? {data-background-image="images/family.jpg"}
 
 ::: notes
 * Six Feet Up
@@ -15,7 +15,10 @@ Python, Plone Django
 Wrote the Plone Training Section on Workflows
 :::
 
-# So What are Workflows?
+# Six Feet Up is Hiring!! {data-background-image="images/sfu.jpg"}
+
+# So What are Workflows? {data-background-image="images/slack_notifications.png"}
+
 
 ::: notes
 * Series of interactions to complete a task
@@ -50,7 +53,7 @@ digraph {
 }
 ```
 
-![](images/simple.dot.svg)
+![Simple Workflow](images/simple.dot.svg){.plain}
 
 ::: notes
 Talk about Plone's workflows and the fact that DCWorkflow was so simple, yet powerful
@@ -64,7 +67,7 @@ Permissions
 
 ## Not when it comes to state...
 
-![](images/not_boolean.dot.svg)
+![](images/not_boolean.dot.svg){.plain}
 
 ::: notes
 Has a row been processed by some external process
@@ -89,7 +92,7 @@ Talk about Plone's workflows and the relationship to permissions
 
 ---
 
-![](images/application_workflow.png){.stretch}
+![Let the crazy begin](images/application_workflow.png){#application-workflow .plain .stretch}
 
 ::: notes
  - Students submit a request for program change for review
@@ -99,7 +102,7 @@ Talk about Plone's workflows and the relationship to permissions
 
 ---
 
-![Case Report Workflow](images/casereport_workflow_simplified.png){ .stretch }
+![Case Report Workflow](images/casereport_workflow_simplified.png){.plain .stretch}
 
 ::: notes
  - Physicians submit a case study for review
@@ -368,6 +371,9 @@ fsm_signals.post_transition.connect(
     ...
 ```
 
+Now generally available in a package called [django-crum](https://django-crum.readthedocs.io/en/latest/)
+
+
 ::: notes
 Sometimes you do not know who the user is, like in a management command or cronjob
 
@@ -377,7 +383,9 @@ Pre and post transition signals don’t include the ‘who’
 But with some ‘clever’ middleware you can get it
 
 And record a transition history (user, transition, object ) as (subject, verb, object, time)
-Or define your own decorator like @transition to record user, transaction, object, args, kwargs, and timestamp -- see also django-fsm-log
+Or define your own decorator like @transition to record user, transaction, object, args, kwargs, and timestamp
+
+-- see also django-fsm-log
 :::
 
 ---
@@ -444,6 +452,30 @@ Transition logging support
 ::: notes
 You can enforce that the FSMField value can only be manipulated via a transition
 :::
+
+---
+
+```{.python .stretch}
+from django.contrib import admin
+
+from fsm_admin.mixins import FSMTransitionMixin
+from fsm_example.models import PublishableModel
+
+# Example use of FSMTransitionMixin (order is important!)
+class PublishableModelAdmin(FSMTransitionMixin, admin.ModelAdmin):
+    list_display = (
+        'name',
+        'display_from',
+        'display_until',
+        'state',
+    )
+    list_filter = (
+        'state',
+    )
+    readonly_fields = (
+        'state',
+    )
+```
 
 # Keep from making a mess...
 ## Take an FSM first strategy
